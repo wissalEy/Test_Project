@@ -143,20 +143,29 @@ var editUser = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepository, error_5;
+    var userID, userRepository, foundUser, error_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _a.trys.push([0, 5, , 6]);
+                userID = Number(req.params.id);
                 userRepository = connectionConfig_1.myConnection.getRepository(User_1.User);
-                return [4 /*yield*/, userRepository.delete(parseInt(req.params.id))];
+                return [4 /*yield*/, userRepository.findOneBy({ id: userID })];
             case 1:
-                _a.sent();
-                return [2 /*return*/, res.status(204).end()];
+                foundUser = _a.sent();
+                if (!foundUser) return [3 /*break*/, 3];
+                return [4 /*yield*/, userRepository.delete(foundUser)];
             case 2:
+                _a.sent();
+                return [2 /*return*/, res.status(204).send()];
+            case 3: return [2 /*return*/, res
+                    .status(404)
+                    .json({ message: "User can be found with this id" })];
+            case 4: return [3 /*break*/, 6];
+            case 5:
                 error_5 = _a.sent();
                 return [2 /*return*/, res.status(500).json({ message: error_5.message })];
-            case 3: return [2 /*return*/];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

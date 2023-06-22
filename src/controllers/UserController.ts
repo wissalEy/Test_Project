@@ -66,9 +66,17 @@ const editUser = async (req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
+    const userID = Number(req.params.id);
     const userRepository = myConnection.getRepository(User);
-    await userRepository.delete(parseInt(req.params.id));
-    return res.status(204).send();
+    const foundUser = await userRepository.findOneBy({ id: userID });
+    if(foundUser){
+        await userRepository.delete(foundUser);
+        return res.status(204).send();
+    }else{
+        return res
+        .status(404)
+        .json({ message: "User can be found with this id" });
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
